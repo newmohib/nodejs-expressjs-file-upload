@@ -2,7 +2,8 @@ const express = require("express");
 const multer = require("multer");
 const path = require("path");
 var fs = require('fs');
-var bodyParser = require('body-parser')
+var bodyParser = require('body-parser');
+var AWS = require('aws-sdk');
 
 // express app initialization
 const app = express();
@@ -11,6 +12,31 @@ const UPLOADS_FOLDER = "./uploads/";
 if (!fs.existsSync(UPLOADS_FOLDER)){
   fs.mkdirSync(UPLOADS_FOLDER);
 }
+
+// AWS CONFIG
+
+// For dev purposes only
+
+const initializationAWS = ()=>{
+  AWS.config.update({ accessKeyId: '',
+   secretAccessKey: '' });
+
+   var s3 = new AWS.S3();
+   s3.upload({
+     Bucket: 'abbvie-darma-dev',
+     Key: 'del3.txt',
+     Body: base64data,
+     ACL: 'public-read'
+   },function () {
+     console.log(arguments);
+     console.log('Successfully uploaded package.');
+   });
+
+}
+
+
+
+
 
 // set the view engine to ejs
 app.set('view engine', 'ejs');
@@ -93,6 +119,13 @@ app.post("/",
   (req, res) => {
     console.log(1000)
     res.send("success");
+  }
+);
+
+app.post("/file-upload-aws",
+  (req, res) => {
+    console.log("aws file upload start", req.body)
+    res.send("file-upload-aws success");
   }
 );
 
