@@ -1,9 +1,31 @@
 const express = require("express");
 const multer = require("multer");
 const path = require("path");
+var fs = require('fs');
+var bodyParser = require('body-parser')
+
+// express app initialization
+const app = express();
+const UPLOADS_FOLDER = "./uploads/";
+
+if (!fs.existsSync(UPLOADS_FOLDER)){
+  fs.mkdirSync(UPLOADS_FOLDER);
+}
+
+// set the view engine to ejs
+app.set('view engine', 'ejs');
+
+// use res.render to load up an ejs view file
+
+// index page
+app.get('/', function(req, res) {
+  res.render('pages/index');
+});
+
+
+app.use(bodyParser.json())
 
 // File upload folder
-const UPLOADS_FOLDER = "./uploads/";
 
 // var upload = multer({ dest: UPLOADS_FOLDER });
 
@@ -56,12 +78,8 @@ var upload = multer({
   },
 });
 
-// express app initialization
-const app = express();
-
 // application route
-app.post(
-  "/",
+app.post("/",
   upload.fields([
     {
       name: "avatar",
@@ -72,7 +90,8 @@ app.post(
       maxCount: 1,
     },
   ]),
-  (req, res, next) => {
+  (req, res) => {
+    console.log(1000)
     res.send("success");
   }
 );
